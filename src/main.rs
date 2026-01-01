@@ -56,12 +56,13 @@ fn main() {
             let mut object = fs::File::open(path).unwrap();
             let mut content: Vec<u8> = vec![];
             let mut extracted_content = String::new();
-            // object.(&mut contents).unwrap();
-            // dbg!(folder_name,file_name);
             object.read_to_end(&mut content).unwrap();
             let mut d = ZlibDecoder::new(content.as_slice());
             d.read_to_string(&mut extracted_content).unwrap();
-            println!("{extracted_content}");
+            if let Some(null_pos) = extracted_content.find('\0') {
+                let content_only = &extracted_content[null_pos + 1..]; 
+                print!("{}", content_only);
+            }
         } 
     }  else {
         println!("unknown command: {}", args[1])
