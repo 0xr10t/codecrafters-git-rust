@@ -1,6 +1,4 @@
 use std::env;
-#[allow(unused_imports)]
-use std::fs::{self, File};
 use codecrafters_git::{cat_file::cat_file, hash_object::hash_object, init::init};
 
 fn main() {

@@ -1,8 +1,6 @@
 use std::fs;
-#[allow(unused_imports)]
-use std::{fs::File, io::prelude::*};
-#[allow(unused_imports)]
-use std::io::{self, Read, BufReader};
+use std::fs::File;
+use std::io::Read;
 use sha1 ::{Sha1, Digest};
 use std::io::Write;
 use flate2::Compression;
