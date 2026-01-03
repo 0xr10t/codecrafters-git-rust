@@ -24,6 +24,7 @@ pub fn name_only(hash:&String){
         cursor = mode_end+1;
         let name_end = &extracted_content[cursor..].iter().position(|&b| b== b'\0').unwrap()+cursor;
         let name = str::from_utf8(&extracted_content[cursor..name_end]).unwrap();
+        cursor = name_end+1;
         println!("{name}");
         cursor += 20;
     }
