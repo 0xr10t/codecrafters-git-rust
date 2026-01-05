@@ -6,6 +6,7 @@ use sha1 ::{Sha1, Digest};
 use std::io::Write;
 use flate2::{Compression};
 use flate2::write::ZlibEncoder;
+use std::os::unix::fs::PermissionsExt;
 
 pub struct TreeEntry{
     pub mode: Mode,
@@ -22,20 +23,6 @@ pub enum Mode{
 
 pub fn write_tree(){
     let root_sha = visit_dirs(Path::new("."));
-    // let path = "./";
-    // let entries = read_dir(path);
-    // for entry in entries.unwrap() {
-    //         let entry = entry.unwrap();
-    //         // let name = entry.file_name();
-    //         // let mode = entry.file_type().unwrap();
-    //         let path = entry.path();
-    //         if path.to_str().unwrap().to_string() == ".git"{
-    //             continue;
-    //         }
-    //         if path.is_dir() {
-    //             visit_dirs(&path);
-    //         }
-    //     }
     println!("{}", root_sha);
 }
 
@@ -59,15 +46,22 @@ fn visit_dirs(dir: &Path) -> String{
                     name:name,
                     sha:tree_sha,
                 });
-            } else {
+            } else if path.is_file(){
                 let blob_hash = write_self(&path.to_str().unwrap().to_string());
+                let metadata = fs::metadata(&path).unwrap();
+                let perm_mode = metadata.permissions().mode();
+                let mode = if perm_mode & 0o111 != 0 {
+                    Mode::Executable
+                } else {
+                    Mode::Regular
+                };
                 entries.push(TreeEntry {
-                mode: Mode::Regular,
-                name,
-                sha: blob_hash,
-            });
+                    mode,
+                    name,
+                    sha: blob_hash,
+                });
             }
-        }
+            }
     }
     entries.sort_by_key(|e| e.name.clone());
     let mut body = Vec::new();
