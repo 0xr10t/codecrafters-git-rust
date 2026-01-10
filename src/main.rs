@@ -12,6 +12,7 @@ fn main() {
         "hash-object" => hash_object(&args[2..]),
         "ls-tree" => ls_tree(&args[2..]),
         "write-tree" => write_tree(),
+        "commit-tree" =>  ls_tree(&args[2..]),
         _ => println!("unknown command: {}", args[1]),
 
     }
