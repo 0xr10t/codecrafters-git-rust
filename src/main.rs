@@ -1,5 +1,5 @@
 use std::env;
-use codecrafters_git::{cat_file::cat_file, commit_tree::commit_tree, hash_object::hash_object, init::init, ls_tree::ls_tree, write_tree::write_tree};
+use codecrafters_git::{cat_file::cat_file, clone::clone, commit_tree::commit_tree, hash_object::hash_object, init::init, ls_tree::ls_tree, write_tree::write_tree};
 
 fn main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -13,8 +13,8 @@ fn main() {
         "ls-tree" => ls_tree(&args[2..]),
         "write-tree" => write_tree(),
         "commit-tree" =>  commit_tree(&args[2..]),
+        "clone" => clone(&args[2..]),
         _ => println!("unknown command: {}", args[1]),
-
     }
 }
 
