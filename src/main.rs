@@ -1,7 +1,8 @@
 use std::env;
 use codecrafters_git::{cat_file::cat_file, clone::clone, commit_tree::commit_tree, hash_object::hash_object, init::init, ls_tree::ls_tree, write_tree::write_tree};
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // You can use print statements as follows for debugging, they'll be visible when running tests.
     eprintln!("Logs from your program will appear here!");
 
@@ -13,7 +14,7 @@ fn main() {
         "ls-tree" => ls_tree(&args[2..]),
         "write-tree" => write_tree(),
         "commit-tree" =>  commit_tree(&args[2..]),
-        "clone" => clone(&args[2..]),
+        "clone" => clone(&args[2..]).await,
         _ => println!("unknown command: {}", args[1]),
     }
 }
