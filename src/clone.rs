@@ -24,6 +24,7 @@ pub async fn clone(args: &[String]){
         );
     let resp = get_req(&get_url).await;
     let data = read_pkt_lines(&resp);
+    let (head,branch) = extract_head_and_branch(data);
 }
 
 async fn get_req(url: &String) -> Vec<u8>{
@@ -61,4 +62,26 @@ fn read_pkt_lines(resp: &[u8]) -> Vec<Vec<u8>>{
         lines.push(payload);
     }
     lines
+}
+
+//extract head and branch from data
+pub fn extract_head_and_branch(data: Vec<Vec<u8>>) -> (String,String){
+    for line in data{
+        //service
+        if line[0] == b'#'{
+            continue;
+        }
+
+        //for  003e<sha> refs/heads/main\0<capabilities>\n
+        //lossy as we dont it to panic cause of one non utf8 part
+        let line_str = String::from_utf8_lossy(&line);
+        let mut parts = line_str.split('\0');
+        let first = parts.next().unwrap();
+        let mut sub_parts = first.split_ascii_whitespace();
+        let sha = sub_parts.next().unwrap();
+        let refs = sub_parts.next().unwrap();
+
+        return (sha.to_string(),refs.to_string());
+    }
+    panic!("no refs")
 }
